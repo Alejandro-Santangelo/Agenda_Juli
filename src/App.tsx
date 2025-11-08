@@ -520,14 +520,14 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm"
               onClick={resetForm}
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[201] rounded-[2rem] p-4 sm:p-8 shadow-2xl overflow-y-auto backdrop-blur-md border border-white/30 modal-mobile scroll-mobile modal-responsive"
+              className="fixed z-[101] rounded-[2rem] p-4 sm:p-8 shadow-2xl overflow-y-auto backdrop-blur-md border border-white/30 modal-mobile scroll-mobile modal-responsive"
               style={{ 
                 top: '20%',
                 left: '27%',
@@ -706,7 +706,7 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[200]"
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[150]"
               onClick={() => setShowCalendar(false)}
             />
             
@@ -714,7 +714,7 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[201] pointer-events-none modal-responsive"
+              className="fixed z-[151] pointer-events-none modal-responsive"
               style={{
                 top: '5%',
                 left: '25%',
@@ -821,7 +821,7 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[300]"
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[200]"
               onClick={() => setShowDaySchedule(false)}
             />
             
@@ -829,7 +829,7 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[301] pointer-events-none"
+              className="fixed z-[201] pointer-events-none"
               style={{
                 top: '10%',
                 left: '25%',
@@ -1630,7 +1630,7 @@ function PacientesSection({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200]"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[150]"
               onClick={() => setShowCalendar(false)}
             />
             
@@ -1639,7 +1639,7 @@ function PacientesSection({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[201] pointer-events-none modal-responsive"
+              className="fixed z-[151] pointer-events-none modal-responsive"
               style={{
                 top: '5%',
                 left: '25%',
@@ -1776,7 +1776,7 @@ function PacientesSection({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[400]"
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[200]"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowDaySessions(false);
@@ -1788,7 +1788,7 @@ function PacientesSection({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[401] pointer-events-none modal-responsive"
+              className="fixed z-[201] pointer-events-none modal-responsive"
               style={{
                 top: '10%',
                 left: '25%',
@@ -2196,7 +2196,7 @@ function PacientesSection({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200]"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
               onClick={resetForm}
             />
             
@@ -2205,7 +2205,7 @@ function PacientesSection({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[201] pointer-events-none modal-responsive"
+              className="fixed z-[101] pointer-events-none modal-responsive"
               style={{
                 top: '5%',
                 left: '25%',
@@ -2316,9 +2316,13 @@ function PacientesSection({
                     <div className="flex items-center justify-center gap-8 border-b border-white/20 pb-2">
                       <button
                         type="button"
-                        onClick={() => setShowCalendar(true)}
-                        className="max-w-md mx-auto py-10 min-h-[5rem] text-white rounded-full shadow-lg hover:scale-105 font-extrabold text-3xl border border-white/30 transition-all duration-200"
-                        style={{ backgroundColor: '#f59532' }}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setShowCalendar(true);
+                        }}
+                        className="max-w-md mx-auto py-10 min-h-[5rem] text-white rounded-full shadow-lg hover:scale-105 active:scale-95 font-extrabold text-3xl border border-white/30 transition-all duration-200 cursor-pointer touch-manipulation"
+                        style={{ backgroundColor: '#f59532', minHeight: '80px', minWidth: '280px' }}
                       >
                         Asignar sesiones al Paciente
                       </button>
