@@ -1426,10 +1426,12 @@ function PacientesSection({
     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     setSelectedDate(dateStr);
     
-    // Si el formulario de paciente está abierto, actualizar solo la fecha
+    // Si el formulario de paciente está abierto, preparar para agregar nueva sesión
     if (showForm) {
-      setFormData({...formData, fecha_turno: dateStr});
+      // Actualizar fecha en el estado temporal para nueva sesión
+      setNuevaSesion({...nuevaSesion, fecha: dateStr});
       // Abrir modal de sesiones para seleccionar hora
+      console.log('Abriendo modal de sesiones para fecha:', dateStr);
       setShowDaySessions(true);
     } else {
       // Si no hay formulario, solo mostrar las sesiones del día
@@ -1774,8 +1776,11 @@ function PacientesSection({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300]"
-              onClick={() => setShowDaySessions(false)}
+              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[400]"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowDaySessions(false);
+              }}
             />
             
             {/* Modal */}
@@ -1783,7 +1788,7 @@ function PacientesSection({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[301] pointer-events-none modal-responsive"
+              className="fixed z-[401] pointer-events-none modal-responsive"
               style={{
                 top: '10%',
                 left: '25%',
