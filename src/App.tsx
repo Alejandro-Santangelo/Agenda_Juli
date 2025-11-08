@@ -1,38 +1,8 @@
 import React, { useState } from 'react';
 import { FlowerIcon, CalendarIcon, PatientsIcon, BackIcon } from './FlowerIcon';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// Interfaces para tipado
-interface Sesion {
-  id: number;
-  fecha: string;
-  hora: string;
-}
-
-interface Tarea {
-  id: number;
-  titulo: string;
-  descripcion: string;
-  fecha: string;
-  hora: string;
-  hora_fin?: string; // Hora de finalización (opcional, para actividades de varias horas)
-  estado: 'pendiente' | 'completada';
-  prioridad: 'alta' | 'media' | 'baja';
-}
-
-interface Paciente {
-  id: number;
-  nombre: string;
-  edad: number;
-  motivo: string;
-  sesiones: Sesion[]; // Array de sesiones múltiples
-  fecha_turno?: string; // DEPRECATED - mantener para compatibilidad
-  hora?: string; // DEPRECATED - mantener para compatibilidad
-  observaciones: string;
-  estado: 'activo' | 'seguimiento' | 'inactivo';
-  telefono?: string;
-  email?: string;
-}
+import { useUIData } from './lib/uiHooks';
+import type { UIPaciente as Paciente, UISesion as Sesion, UITarea as Tarea } from './lib/adapters';
 
 const TABS = [
   { key: 'agenda', label: 'Mi Agenda' },
@@ -42,14 +12,41 @@ const TABS = [
 export default function App() {
   const [section, setSection] = useState<'home' | 'agenda' | 'pacientes'>('home');
   
-  // Estados para las tareas de la agenda
-  const [tareas, setTareas] = useState<Tarea[]>([]);
-
-  // Estados para los pacientes
-  const [pacientes, setPacientes] = useState<Paciente[]>([]);
+  // Hook unificado para todos los datos
+  const {
+    pacientes,
+    tareas,
+    loading,
+    error,
+    createPaciente,
+    updatePaciente,
+    deletePaciente,
+    createTarea,
+    updateTarea,
+    deleteTarea,
+    toggleTareaStatus,
+    createSesion,
+    deleteSesion
+  } = useUIData();
 
   return (
     <div className="min-h-screen relative overflow-hidden">
+      {loading && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Cargando datos...</p>
+          </div>
+        </div>
+      )}
+      
+      {error && (
+        <div className="fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg z-50 max-w-md">
+          <p className="font-bold">Error:</p>
+          <p>{error}</p>
+        </div>
+      )}
+      
       {/* Fondo con gradiente animado */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600" />
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary-300/20 to-accent-400/30" />
@@ -166,7 +163,15 @@ export default function App() {
               transition={{ duration: 0.5 }}
               className="w-full max-w-6xl"
             >
-              <AgendaSection tareas={tareas} setTareas={setTareas} pacientes={pacientes} setSection={setSection} />
+              <AgendaSection 
+                tareas={tareas} 
+                createTarea={createTarea}
+                deleteTarea={deleteTarea}
+                updateTarea={updateTarea}
+                toggleTareaStatus={toggleTareaStatus}
+                pacientes={pacientes} 
+                setSection={setSection} 
+              />
             </motion.div>
           )}
 
@@ -179,7 +184,16 @@ export default function App() {
               transition={{ duration: 0.5 }}
               className="w-full max-w-6xl"
             >
-              <PacientesSection pacientes={pacientes} setPacientes={setPacientes} tareas={tareas} setSection={setSection} />
+              <PacientesSection 
+                pacientes={pacientes} 
+                createPaciente={createPaciente}
+                deletePaciente={deletePaciente}
+                updatePaciente={updatePaciente}
+                createSesion={createSesion}
+                deleteSesion={deleteSesion}
+                tareas={tareas} 
+                setSection={setSection} 
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -238,12 +252,15 @@ function CancelIcon({ color = '#ef4444', size = 20 }: { color?: string; size?: n
 
 interface AgendaSectionProps {
   tareas: Tarea[];
-  setTareas: React.Dispatch<React.SetStateAction<Tarea[]>>;
+  createTarea: (tarea: Partial<Tarea>) => Promise<any>;
+  deleteTarea: (id: number) => Promise<void>;
+  updateTarea: (id: number, updates: Partial<Tarea>) => Promise<void>;
+  toggleTareaStatus: (id: number) => Promise<void>;
   pacientes: Paciente[];
   setSection: React.Dispatch<React.SetStateAction<'home' | 'agenda' | 'pacientes'>>;
 }
 
-function AgendaSection({ tareas, setTareas, pacientes, setSection }: AgendaSectionProps) {
+function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTareaStatus, pacientes, setSection }: AgendaSectionProps) {
   const [showForm, setShowForm] = useState(false);
   const [showList, setShowList] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -380,29 +397,30 @@ function AgendaSection({ tareas, setTareas, pacientes, setSection }: AgendaSecti
     setShowDaySchedule(false);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (editingTask) {
-      setTareas(tareas.map(t => 
-        t.id === editingTask.id 
-          ? { ...editingTask, ...formData } as Tarea
-          : t
-      ));
-    } else {
-      const newTask: Tarea = {
-        id: Math.max(...tareas.map(t => t.id), 0) + 1,
-        titulo: formData.titulo || '',
-        descripcion: formData.descripcion || '',
-        fecha: formData.fecha || '',
-        hora: formData.hora || '',
-        estado: formData.estado || 'pendiente',
-        prioridad: formData.prioridad || 'media'
-      };
-      setTareas([...tareas, newTask]);
+    try {
+      if (editingTask) {
+        await updateTarea(editingTask.id, formData);
+      } else {
+        const newTask = {
+          titulo: formData.titulo || '',
+          descripcion: formData.descripcion || '',
+          fecha: formData.fecha || '',
+          hora: formData.hora || '',
+          hora_fin: formData.hora_fin,
+          estado: formData.estado || 'pendiente' as const,
+          prioridad: formData.prioridad || 'media' as const
+        };
+        await createTarea(newTask);
+      }
+      
+      resetForm();
+    } catch (error) {
+      console.error('Error al guardar la tarea:', error);
+      alert('Error al guardar la tarea. Por favor intenta de nuevo.');
     }
-    
-    resetForm();
   };
 
   const handleEdit = (tarea: Tarea) => {
@@ -412,18 +430,24 @@ function AgendaSection({ tareas, setTareas, pacientes, setSection }: AgendaSecti
     setShowList(false);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('¿Estás seguro de que quieres eliminar esta cita?')) {
-      setTareas(tareas.filter(t => t.id !== id));
+      try {
+        await deleteTarea(id);
+      } catch (error) {
+        console.error('Error al eliminar la tarea:', error);
+        alert('Error al eliminar la tarea. Por favor intenta de nuevo.');
+      }
     }
   };
 
-  const toggleStatus = (id: number) => {
-    setTareas(tareas.map(t => 
-      t.id === id 
-        ? { ...t, estado: t.estado === 'pendiente' ? 'completada' : 'pendiente' }
-        : t
-    ));
+  const toggleStatus = async (id: number) => {
+    try {
+      await toggleTareaStatus(id);
+    } catch (error) {
+      console.error('Error al actualizar el estado de la tarea:', error);
+      alert('Error al actualizar el estado. Por favor intenta de nuevo.');
+    }
   };
 
   return (
@@ -958,9 +982,14 @@ function AgendaSection({ tareas, setTareas, pacientes, setSection }: AgendaSecti
                                 Reprogramar
                               </button>
                               <button
-                                onClick={() => {
+                                onClick={async () => {
                                   if (confirm(`¿Cancelar actividad "${slot.tarea!.titulo}" el ${selectedDate} a las ${slot.hora}?`)) {
-                                    setTareas(tareas.filter(t => t.id !== slot.tarea!.id));
+                                    try {
+                                      await deleteTarea(slot.tarea!.id);
+                                    } catch (error) {
+                                      console.error('Error al cancelar la actividad:', error);
+                                      alert('Error al cancelar la actividad. Por favor intenta de nuevo.');
+                                    }
                                   }
                                 }}
                                 className="px-3 py-1.5 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors text-xs flex items-center gap-1.5 whitespace-nowrap"
@@ -1191,12 +1220,25 @@ function AgendaSection({ tareas, setTareas, pacientes, setSection }: AgendaSecti
 
 interface PacientesSectionProps {
   pacientes: Paciente[];
-  setPacientes: React.Dispatch<React.SetStateAction<Paciente[]>>;
+  createPaciente: (paciente: Partial<Paciente>) => Promise<any>;
+  deletePaciente: (id: number) => Promise<void>;
+  updatePaciente: (id: number, updates: Partial<Paciente>) => Promise<void>;
+  createSesion: (pacienteId: number, sesion: Omit<Sesion, 'id'>) => Promise<void>;
+  deleteSesion: (sesionId: number) => Promise<void>;
   tareas: Tarea[];
   setSection: React.Dispatch<React.SetStateAction<'home' | 'agenda' | 'pacientes'>>;
 }
 
-function PacientesSection({ pacientes, setPacientes, tareas, setSection }: PacientesSectionProps) {
+function PacientesSection({ 
+  pacientes, 
+  createPaciente, 
+  deletePaciente, 
+  updatePaciente,
+  createSesion,
+  deleteSesion,
+  tareas, 
+  setSection 
+}: PacientesSectionProps) {
   const [showForm, setShowForm] = useState(false);
   const [showList, setShowList] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -1250,7 +1292,7 @@ function PacientesSection({ pacientes, setPacientes, tareas, setSection }: Pacie
   const getSuggestedAvailableSlots = (date: string) => {
     const occupiedSessions = getSessionsByDate(date);
     const occupiedHours = occupiedSessions.map(p => {
-      const [hour, minute] = p.hora.split(':').map(Number);
+      const [hour, minute] = p.sesion.hora.split(':').map(Number);
       return hour; // Solo la hora (cada sesión dura 1 hora)
     });
 
@@ -1403,7 +1445,7 @@ function PacientesSection({ pacientes, setPacientes, tareas, setSection }: Pacie
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validar que tenga al menos una sesión
@@ -1412,30 +1454,18 @@ function PacientesSection({ pacientes, setPacientes, tareas, setSection }: Pacie
       return;
     }
     
-    if (editingPatient) {
-      setPacientes(pacientes.map(p => 
-        p.id === editingPatient.id 
-          ? { ...editingPatient, ...formData } as Paciente
-          : p
-      ));
-    } else {
-      const newPatient: Paciente = {
-        id: Math.max(...pacientes.map(p => p.id), 0) + 1,
-        nombre: formData.nombre || '',
-        edad: formData.edad || 0,
-        motivo: formData.motivo || '',
-        sesiones: formData.sesiones || [],
-        fecha_turno: '', // Deprecated
-        hora: '', // Deprecated
-        observaciones: formData.observaciones || '',
-        estado: formData.estado || 'activo',
-        telefono: formData.telefono || '',
-        email: formData.email || ''
-      };
-      setPacientes([...pacientes, newPatient]);
+    try {
+      if (editingPatient) {
+        await updatePaciente(editingPatient.id, formData);
+      } else {
+        await createPaciente(formData);
+      }
+      
+      resetForm();
+    } catch (error) {
+      console.error('Error al guardar el paciente:', error);
+      alert('Error al guardar el paciente. Por favor intenta de nuevo.');
     }
-    
-    resetForm();
   };
 
   // Función para agregar una sesión al paciente
@@ -1501,9 +1531,14 @@ function PacientesSection({ pacientes, setPacientes, tareas, setSection }: Pacie
     setShowForm(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('¿Estás seguro de que quieres eliminar este paciente?')) {
-      setPacientes(pacientes.filter(p => p.id !== id));
+      try {
+        await deletePaciente(id);
+      } catch (error) {
+        console.error('Error al eliminar el paciente:', error);
+        alert('Error al eliminar el paciente. Por favor intenta de nuevo.');
+      }
     }
   };
 
@@ -1943,13 +1978,20 @@ function PacientesSection({ pacientes, setPacientes, tareas, setSection }: Pacie
                                   Reprogramar
                                 </button>
                                 <button
-                                  onClick={() => {
+                                  onClick={async () => {
                                     if (confirm(`¿Cancelar sesión de ${slot.paciente!.nombre} el ${selectedDate} a las ${slot.hora}?`)) {
-                                      setPacientes(pacientes.map(p => 
-                                        p.id === slot.paciente!.id 
-                                          ? { ...p, fecha_turno: '', hora: '' }
-                                          : p
-                                      ));
+                                      try {
+                                        // Encontrar la sesión correspondiente
+                                        const sesion = slot.paciente!.sesiones.find(s => 
+                                          s.fecha === selectedDate && s.hora === slot.hora
+                                        );
+                                        if (sesion) {
+                                          await deleteSesion(sesion.id);
+                                        }
+                                      } catch (error) {
+                                        console.error('Error al cancelar la sesión:', error);
+                                        alert('Error al cancelar la sesión. Por favor intenta de nuevo.');
+                                      }
                                     }
                                   }}
                                   className="px-3 py-1.5 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors text-xs flex items-center gap-1.5 whitespace-nowrap"
