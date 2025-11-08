@@ -87,3 +87,83 @@ body {
 .text-shadow-lg {
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+/* Optimizaciones específicas para móviles */
+@media (max-width: 768px) {
+  /* Ajustar viewport para móviles */
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Mejorar rendimiento de modales en móviles */
+  .modal-mobile {
+    will-change: transform;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  
+  /* Posicionamiento de modales específico para móviles */
+  .modal-responsive {
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100vw - 2rem) !important;
+  }
+  
+  /* Prevenir zoom en inputs en iOS */
+  input[type="text"], 
+  input[type="email"], 
+  input[type="tel"], 
+  input[type="number"], 
+  textarea, 
+  select {
+    font-size: 16px !important;
+  }
+  
+  /* Mejorar táctil en botones */
+  button, 
+  .clickable {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Optimizar scrolling en móviles */
+  .scroll-mobile {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+}
+
+/* Para computadoras (pantallas grandes) mantener posicionamiento original */
+@media (min-width: 769px) {
+  .modal-responsive {
+    /* En computadoras, los estilos inline originales se mantienen */
+    position: relative;
+  }
+}
+
+/* Para pantallas muy pequeñas (hasta 480px) */
+@media (max-width: 480px) {
+  /* Reducir padding en modales */
+  .modal-content-mobile {
+    padding: 1rem !important;
+  }
+  
+  /* Ajustar títulos en móviles */
+  .title-mobile {
+    font-size: 1.5rem !important;
+  }
+  
+  /* Botones más grandes para táctil */
+  .btn-mobile {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.75rem 1rem;
+  }
+}

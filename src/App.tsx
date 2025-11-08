@@ -9,6 +9,16 @@ const TABS = [
   { key: 'pacientes', label: 'Mis Pacientes' },
 ];
 
+// Función para detectar dispositivos móviles
+const isMobileDevice = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
+// Función para obtener el viewport height correcto en móviles
+const getViewportHeight = () => {
+  return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+};
+
 export default function App() {
   const [section, setSection] = useState<'home' | 'agenda' | 'pacientes'>('home');
   
@@ -52,11 +62,11 @@ export default function App() {
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-primary-300/20 to-accent-400/30" />
       
       {/* Elementos flotantes decorativos */}
-      <div className="absolute top-20 left-10 w-32 h-32 bg-primary-300/20 rounded-full blur-xl animate-float" />
-      <div className="absolute top-40 right-20 w-24 h-24 bg-accent-300/20 rounded-full blur-lg animate-pulse-slow" />
-      <div className="absolute bottom-20 left-1/4 w-40 h-40 bg-primary-200/10 rounded-full blur-2xl animate-bounce-slow" />
+      <div className="absolute top-20 left-4 sm:left-10 w-24 sm:w-32 h-24 sm:h-32 bg-primary-300/20 rounded-full blur-xl animate-float" />
+      <div className="absolute top-40 right-4 sm:right-20 w-16 sm:w-24 h-16 sm:h-24 bg-accent-300/20 rounded-full blur-lg animate-pulse-slow" />
+      <div className="absolute bottom-20 left-1/4 w-32 sm:w-40 h-32 sm:h-40 bg-primary-200/10 rounded-full blur-2xl animate-bounce-slow" />
       
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-6 font-poppins">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 font-poppins">
         <AnimatePresence mode="wait">
           {section === 'home' && (
             <motion.div
@@ -91,7 +101,7 @@ export default function App() {
                     transition: { duration: 0.3 } 
                   }}
                   whileTap={{ scale: 0.95 }}
-                  className="group relative w-full h-64 glass-strong rounded-3xl p-8 text-white overflow-hidden neon"
+                  className="group relative w-full h-64 glass-strong rounded-3xl p-6 sm:p-8 text-white overflow-hidden neon clickable btn-mobile"
                   onClick={() => setSection('agenda')}
                 >
                   {/* Efecto shimmer */}
@@ -102,8 +112,8 @@ export default function App() {
                       <CalendarIcon color="#ffffff" size={64} />
                     </div>
                     <div className="text-center">
-                      <h3 className="text-3xl font-bold mb-2">Mi Agenda</h3>
-                      <p className="text-white/70 text-sm">Gestiona tus citas y recordatorios</p>
+                      <h3 className="text-2xl sm:text-3xl font-bold mb-2 title-mobile">Mi Agenda</h3>
+                      <p className="text-white/70 text-xs sm:text-sm">Gestiona tus citas y recordatorios</p>
                     </div>
                   </div>
                   
@@ -121,7 +131,7 @@ export default function App() {
                     transition: { duration: 0.3 } 
                   }}
                   whileTap={{ scale: 0.95 }}
-                  className="group relative w-full h-64 glass-strong rounded-3xl p-8 text-white overflow-hidden neon"
+                  className="group relative w-full h-64 glass-strong rounded-3xl p-6 sm:p-8 text-white overflow-hidden neon clickable btn-mobile"
                   onClick={() => setSection('pacientes')}
                 >
                   {/* Efecto shimmer */}
@@ -132,8 +142,8 @@ export default function App() {
                       <PatientsIcon color="#ffffff" size={64} />
                     </div>
                     <div className="text-center">
-                      <h3 className="text-3xl font-bold mb-2">Mis Pacientes</h3>
-                      <p className="text-white/70 text-sm">Administra información de pacientes</p>
+                      <h3 className="text-2xl sm:text-3xl font-bold mb-2 title-mobile">Mis Pacientes</h3>
+                      <p className="text-white/70 text-xs sm:text-sm">Administra información de pacientes</p>
                     </div>
                   </div>
                   
@@ -517,7 +527,7 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[201] rounded-[2rem] p-8 shadow-2xl overflow-y-auto backdrop-blur-md border border-white/30"
+              className="fixed z-[201] rounded-[2rem] p-4 sm:p-8 shadow-2xl overflow-y-auto backdrop-blur-md border border-white/30 modal-mobile scroll-mobile modal-responsive"
               style={{ 
                 top: '20%',
                 left: '27%',
@@ -531,14 +541,14 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
             >
               <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/20">
                 <div>
-                  <h3 className="text-3xl font-bold text-white">
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white title-mobile">
                     {editingTask ? '✏️ Editar Cita' : '➕ Nueva Cita'}
                   </h3>
-                  <p className="text-white/60 mt-1 text-sm">Completa los datos de tu actividad personal</p>
+                  <p className="text-white/60 mt-1 text-xs sm:text-sm">Completa los datos de tu actividad personal</p>
                 </div>
                 <button
                   onClick={resetForm}
-                  className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                  className="p-2 rounded-full hover:bg-white/10 transition-colors btn-mobile"
                 >
                   <CancelIcon size={24} />
                 </button>
@@ -556,7 +566,7 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
                         onClick={() => setSection('home')}
                         className="max-w-xs py-4 px-4 text-lg font-bold rounded-full shadow-lg bg-accent-400 text-white hover:bg-accent-500 transition-all flex items-center justify-center gap-3"
                       >
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                         Volver
                       </button>
                     </div>
@@ -704,7 +714,7 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[201] pointer-events-none"
+              className="fixed z-[201] pointer-events-none modal-responsive"
               style={{
                 top: '5%',
                 left: '25%',
@@ -714,14 +724,14 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               }}
             >
               <div 
-                className="rounded-3xl p-8 w-full shadow-2xl pointer-events-auto"
+                className="rounded-3xl p-4 sm:p-8 w-full shadow-2xl pointer-events-auto modal-mobile scroll-mobile"
                 style={{
                   backgroundColor: '#fbd7a5',
                   backdropFilter: 'blur(20px)',
                   border: '2px solid rgba(255,255,255,0.3)',
                   boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
                   borderRadius: '2rem',
-                  padding: '2rem',
+                  padding: '1rem 1rem 2rem 2rem',
                   width: '100%',
                   pointerEvents: 'auto',
                   overflowY: 'auto',
@@ -730,10 +740,10 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold text-white">📅 Selecciona Fecha</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white title-mobile">📅 Selecciona Fecha</h3>
                   <button
                     onClick={() => setShowCalendar(false)}
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                    className="p-2 rounded-full hover:bg-white/10 transition-colors btn-mobile"
                   >
                     <CancelIcon size={24} />
                   </button>
@@ -1031,7 +1041,7 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
                 className="max-w-xs py-4 px-4 text-lg font-bold rounded-full shadow-lg text-white hover:bg-accent-500 transition-all flex items-center justify-center gap-3"
                 style={{ backgroundColor: '#f8bb6d' }}
               >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                 Volver
               </button>
             </div>
@@ -1627,7 +1637,7 @@ function PacientesSection({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[201] pointer-events-none"
+              className="fixed z-[201] pointer-events-none modal-responsive"
               style={{
                 top: '5%',
                 left: '25%',
@@ -1637,36 +1647,36 @@ function PacientesSection({
               }}
             >
               <div 
-                className="rounded-[2rem] p-6 w-full shadow-2xl pointer-events-auto overflow-y-auto border-2 border-white/30 backdrop-blur-xl"
+                className="rounded-[2rem] p-4 sm:p-6 w-full shadow-2xl pointer-events-auto overflow-y-auto border-2 border-white/30 backdrop-blur-xl modal-mobile scroll-mobile"
                 style={{ maxHeight: 'calc(100vh - 8rem)', backgroundColor: '#fbd7a5' }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-bold text-white">📅 Calendario de Sesiones</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white title-mobile">📅 Calendario de Sesiones</h3>
                   <button
                     onClick={() => setShowCalendar(false)}
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                    className="p-2 rounded-full hover:bg-white/10 transition-colors btn-mobile"
                   >
                     <CancelIcon size={24} />
                   </button>
                 </div>
 
                 {/* Navegación del mes */}
-                <div className="flex items-center justify-between mb-4 bg-[#f59532]/80 rounded-2xl p-4">
+                <div className="flex items-center justify-between mb-4 bg-[#f59532]/80 rounded-2xl p-3 sm:p-4">
                   <button
                     onClick={previousMonth}
-                    className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors"
+                    className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors btn-mobile"
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="15 18 9 12 15 6"></polyline>
                     </svg>
                   </button>
-                  <h4 className="text-xl font-bold text-white">
+                  <h4 className="text-lg sm:text-xl font-bold text-white title-mobile">
                     {monthNames[currentMonth]} {currentYear}
                   </h4>
                   <button
                     onClick={nextMonth}
-                    className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors"
+                    className="p-2 bg-white/10 hover:bg-white/20 rounded-xl transition-colors btn-mobile"
                   >
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="9 18 15 12 9 6"></polyline>
@@ -1689,7 +1699,7 @@ function PacientesSection({
                   <div className="grid grid-cols-7 border-2 border-white/20 rounded-lg overflow-hidden">
                     {generateCalendarDays(currentYear, currentMonth).map((day, index) => {
                       if (day === null) {
-                        return <div key={`empty-${index}`} className="h-[52px] border border-white/10 bg-white/5" />;
+                        return <div key={`empty-${index}`} className="h-[48px] sm:h-[52px] border border-white/10 bg-white/5" />;
                       }
 
                       const status = getDayStatus(currentYear, currentMonth, day);
@@ -1706,7 +1716,7 @@ function PacientesSection({
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={() => handleDayClick(day)}
-                          className={`h-[52px] flex flex-col items-center justify-center text-white font-semibold transition-all text-base border border-white/10 ${
+                          className={`h-[48px] sm:h-[52px] flex flex-col items-center justify-center text-white font-semibold transition-all text-sm sm:text-base border border-white/10 clickable ${
                             isSelected 
                               ? 'ring-2 ring-inset ring-white' 
                               : ''
@@ -1773,7 +1783,7 @@ function PacientesSection({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[301] pointer-events-none"
+              className="fixed z-[301] pointer-events-none modal-responsive"
               style={{
                 top: '10%',
                 left: '25%',
@@ -1783,7 +1793,7 @@ function PacientesSection({
               }}
             >
               <div 
-                className="rounded-[2rem] p-6 w-full shadow-2xl pointer-events-auto overflow-y-auto"
+                className="rounded-[2rem] p-4 sm:p-6 w-full shadow-2xl pointer-events-auto overflow-y-auto modal-mobile scroll-mobile"
                 style={{ 
                   maxHeight: 'calc(100vh - 12rem)',
                   background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.25) 100%)',
@@ -1793,7 +1803,7 @@ function PacientesSection({
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3 className="text-lg sm:text-2xl font-bold text-white title-mobile">
                     📅 Sesiones del {new Date(selectedDate + 'T00:00:00').toLocaleDateString('es-ES', { 
                       weekday: 'long', 
                       year: 'numeric', 
@@ -1803,7 +1813,7 @@ function PacientesSection({
                   </h3>
                   <button
                     onClick={() => setShowDaySessions(false)}
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                    className="p-2 rounded-full hover:bg-white/10 transition-colors btn-mobile"
                   >
                     <CancelIcon size={24} />
                   </button>
@@ -2181,7 +2191,7 @@ function PacientesSection({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200]"
               onClick={resetForm}
             />
             
@@ -2190,7 +2200,7 @@ function PacientesSection({
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[101] pointer-events-none"
+              className="fixed z-[201] pointer-events-none modal-responsive"
               style={{
                 top: '5%',
                 left: '25%',
@@ -2200,7 +2210,7 @@ function PacientesSection({
               }}
             >
               <div 
-                className="rounded-[2rem] p-5 w-full shadow-2xl pointer-events-auto overflow-y-auto"
+                className="rounded-[2rem] p-4 sm:p-5 w-full shadow-2xl pointer-events-auto overflow-y-auto modal-mobile scroll-mobile modal-content-mobile"
                 style={{ 
                   maxHeight: 'calc(100vh - 4rem)',
                   background: 'linear-gradient(135deg, rgba(254, 249, 195, 0.95) 0%, rgba(254, 240, 138, 0.95) 50%, rgba(253, 230, 138, 0.95) 100%)',
@@ -2210,12 +2220,12 @@ function PacientesSection({
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-2xl font-bold text-white">
+                  <h3 className="text-xl sm:text-2xl font-bold text-white title-mobile">
                     {editingPatient ? '✏️ Editar Paciente' : '➕ Nuevo Paciente'}
                   </h3>
                   <button
                     onClick={resetForm}
-                    className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                    className="p-2 rounded-full hover:bg-white/10 transition-colors btn-mobile"
                   >
                     <CancelIcon size={24} />
                   </button>
@@ -2239,7 +2249,7 @@ function PacientesSection({
                             onClick={() => setSection('home')}
                             className="max-w-xs py-4 px-4 text-lg font-bold rounded-full shadow-lg bg-accent-400 text-white hover:bg-accent-500 transition-all flex items-center justify-center gap-3"
                           >
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                             Volver
                           </button>
                         </div>
@@ -2426,7 +2436,7 @@ function PacientesSection({
                 className="max-w-xs py-4 px-4 text-lg font-bold rounded-full shadow-lg text-white hover:bg-accent-500 transition-all flex items-center justify-center gap-3"
                 style={{ backgroundColor: '#f8bb6d' }}
               >
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                 Volver
               </button>
             </div>
