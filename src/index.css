@@ -114,6 +114,7 @@ body {
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     width: calc(100vw - 2rem) !important;
+    max-width: none !important;
   }
   
   /* Prevenir zoom en inputs en iOS */
@@ -159,9 +160,13 @@ body {
 /* Para computadoras (pantallas grandes) mantener posicionamiento centrado para modales apilados */
 @media (min-width: 769px) {
   .modal-responsive {
-    /* En computadoras, mantener el posicionamiento centrado definido en los estilos inline */
-    /* Esto asegura que todos los modales se apilen en el mismo lugar */
-    position: fixed;
+    /* En computadoras, usar el ancho original y mantener centrado */
+    width: 90% !important;
+    max-width: 48rem !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
   }
 }
 
