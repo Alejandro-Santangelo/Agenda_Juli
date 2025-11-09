@@ -529,8 +529,8 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               exit={{ opacity: 0, scale: 0.9 }}
               className="fixed z-[101] rounded-[2rem] p-4 sm:p-8 shadow-2xl overflow-y-auto backdrop-blur-md border border-white/30 modal-mobile scroll-mobile modal-responsive"
               style={{ 
-                top: '20%',
-                left: '27%',
+                top: '50%',
+                left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: '650px', 
                 maxWidth: '90vw', 
@@ -716,9 +716,9 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               exit={{ opacity: 0, scale: 0.9 }}
               className="fixed z-[151] pointer-events-none modal-responsive"
               style={{
-                top: '5%',
-                left: '25%',
-                transform: 'translateX(-50%)',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '90%',
                 maxWidth: '500px'
               }}
@@ -829,17 +829,17 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="fixed z-[201] pointer-events-none"
+              className="fixed z-[201] pointer-events-none modal-responsive"
               style={{
-                top: '10%',
-                left: '25%',
-                transform: 'translateX(-50%)',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '90%',
                 maxWidth: '600px'
               }}
             >
               <div 
-                className="rounded-3xl p-8 w-full shadow-2xl pointer-events-auto overflow-y-auto"
+                className="rounded-3xl p-8 w-full shadow-2xl pointer-events-auto overflow-y-auto modal-mobile scroll-mobile"
                 style={{
                   background: 'linear-gradient(135deg, rgba(34,197,94,0.25) 0%, rgba(22,163,74,0.25) 100%)',
                   backdropFilter: 'blur(20px)',
@@ -1130,9 +1130,9 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
               exit={{ opacity: 0, scale: 0.9 }}
               className="fixed z-[101] pointer-events-none"
               style={{
-                top: '5%',
-                left: '25%',
-                transform: 'translateX(-50%)',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '90%',
                 maxWidth: '800px'
               }}
@@ -1641,9 +1641,9 @@ function PacientesSection({
               exit={{ opacity: 0, scale: 0.9 }}
               className="fixed z-[151] pointer-events-none modal-responsive"
               style={{
-                top: '5%',
-                left: '25%',
-                transform: 'translateX(-50%)',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '90%',
                 maxWidth: '42rem'
               }}
@@ -1790,9 +1790,9 @@ function PacientesSection({
               exit={{ opacity: 0, scale: 0.9 }}
               className="fixed z-[201] pointer-events-none modal-responsive"
               style={{
-                top: '10%',
-                left: '25%',
-                transform: 'translateX(-50%)',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '90%',
                 maxWidth: '48rem'
               }}
@@ -2051,9 +2051,9 @@ function PacientesSection({
               exit={{ opacity: 0, scale: 0.9 }}
               className="fixed z-[101] pointer-events-none"
               style={{
-                top: '10%',
-                left: '25%',
-                transform: 'translateX(-50%)',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '90%',
                 maxWidth: '56rem'
               }}
@@ -2207,9 +2207,9 @@ function PacientesSection({
               exit={{ opacity: 0, scale: 0.9 }}
               className="fixed z-[101] pointer-events-none modal-responsive"
               style={{
-                top: '5%',
-                left: '25%',
-                transform: 'translateX(-50%)',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
                 width: '90%',
                 maxWidth: '48rem'
               }}

@@ -156,11 +156,12 @@ body {
   }
 }
 
-/* Para computadoras (pantallas grandes) mantener posicionamiento original */
+/* Para computadoras (pantallas grandes) mantener posicionamiento centrado para modales apilados */
 @media (min-width: 769px) {
   .modal-responsive {
-    /* En computadoras, los estilos inline originales se mantienen */
-    position: relative;
+    /* En computadoras, mantener el posicionamiento centrado definido en los estilos inline */
+    /* Esto asegura que todos los modales se apilen en el mismo lugar */
+    position: fixed;
   }
 }
 
