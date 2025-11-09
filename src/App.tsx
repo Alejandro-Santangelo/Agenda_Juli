@@ -560,16 +560,6 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
                     <label className="block text-white text-base font-semibold mb-2">
                       📌 Título de la cita
                     </label>
-                    <div className="flex justify-center mb-4">
-                      <button
-                        type="button"
-                        onClick={() => setSection('home')}
-                        className="max-w-xs py-4 px-4 text-lg font-bold rounded-full shadow-lg bg-accent-400 text-white hover:bg-accent-500 transition-all flex items-center justify-center gap-3"
-                      >
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                        Volver
-                      </button>
-                    </div>
                     <input
                       type="text"
                       value={formData.titulo}
@@ -2248,16 +2238,6 @@ function PacientesSection({
                         <label className="block text-white text-sm font-medium mb-2">
                           Nombre Completo
                         </label>
-                        <div className="flex justify-center mb-4">
-                          <button
-                            type="button"
-                            onClick={() => setSection('home')}
-                            className="max-w-xs py-4 px-4 text-lg font-bold rounded-full shadow-lg bg-accent-400 text-white hover:bg-accent-500 transition-all flex items-center justify-center gap-3"
-                          >
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 12H5M12 19l-7-7 7-7" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>
-                            Volver
-                          </button>
-                        </div>
                         <input
                           type="text"
                           value={formData.nombre}
