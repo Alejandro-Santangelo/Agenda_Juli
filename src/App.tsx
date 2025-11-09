@@ -835,17 +835,17 @@ function AgendaSection({ tareas, createTarea, deleteTarea, updateTarea, toggleTa
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: '90%',
-                maxWidth: '600px'
+                maxWidth: '48rem'
               }}
             >
               <div 
-                className="rounded-3xl p-8 w-full shadow-2xl pointer-events-auto overflow-y-auto modal-mobile scroll-mobile"
+                className="rounded-[2rem] p-4 sm:p-6 w-full shadow-2xl pointer-events-auto overflow-y-auto modal-mobile scroll-mobile"
                 style={{
+                  maxHeight: 'calc(100vh - 12rem)',
                   background: 'linear-gradient(135deg, rgba(34,197,94,0.25) 0%, rgba(22,163,74,0.25) 100%)',
                   backdropFilter: 'blur(20px)',
                   border: '2px solid rgba(34,197,94,0.5)',
-                  boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
-                  maxHeight: 'calc(100vh - 12rem)'
+                  boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)'
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
